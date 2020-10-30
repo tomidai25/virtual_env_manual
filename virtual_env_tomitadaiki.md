@@ -130,7 +130,7 @@ root@localhost:の後のランダムな文字列がパスワードとなる。
 作成したファイルに以下の内容を書き込む。  
 - `[nginx]`
 - name=nginx repo
-- baseurl=http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/
+- baseurl=`http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/`
 - gpgcheck=0
 - enabled=1  
 
