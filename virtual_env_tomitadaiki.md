@@ -121,7 +121,6 @@ root@localhost:の後のランダムな文字列がパスワードとなる。
 
 ### 4.データベースの作成 
 `mysql > create database laravel_markdown;`を実行してデータベースの作成を行う。Query OKと表示されたら作成は完了。  
-作成したLaravelプロジェクトのディレクトリに移動して`php artisan migrate`を実行する。  
 
 <br>
 
@@ -141,13 +140,16 @@ root@localhost:の後のランダムな文字列がパスワードとなる。
 
 Nginxのバージョンが確認できたら、以下のコマンドを実行してNginxを起動する。  
 `sudo systemctl start nginx`  
-ブラウザ上で http://192.168.33.10でアクセスする。NginxのWelcomeページが表示されれば、問題なく動いているのでLaravelを動かす作業に入る。  
+ブラウザ上で`http://192.168.33.10`でアクセスする。NginxのWelcomeページが表示されれば、問題なく動いているのでLaravelを動かす作業に入る。  
 注：vagrantfileでipを変更している場合は、変更したipアドレスを入力する。  
 
 <br>
 
 ### 2.Laravelを動かす 
-Nginxには設定ファイルが存在しているので編集を行う。Nginxは、php-fpmとセットで使用する。  
+まず、作成したLaravelプロジェクトのディレクトリ下の.envファイルの内容を以下に変更する。  
+DB_PASSWORD= `->` DB_PASSWORD=登録したパスワード  
+変更が完了したら`php artisan migrate`を実行する。  
+次に、Nginxには設定ファイルが存在しているので編集を行う。Nginxは、php-fpmとセットで使用する。  
 使用しているOSがCentOSの場合、`/etc/nginx/conf.d`ディレクトリ下の`default.conf`ファイルが設定ファイルとなる。  
 まずはNginxの設定ファイルを編集していく。  
 `sudo vi /etc/nginx/conf.d/default.conf`でファイルを開き、  
@@ -174,7 +176,7 @@ location ~ \.php$の中で
 1. `sudo systemctl restart nginx`
 2. `sudo systemctl start php-fpm`  
 
-ブラウザ上でhttp://192.168.33.10 を入力すると` Permission denied`のエラーが表示される。  
+ブラウザ上で`http://192.168.33.10`を入力すると` Permission denied`のエラーが表示される。  
 これはphp-fpmの設定ファイルのuserとgroupをnginx に変更したが、ファイルとディレクトリの実行useとgroupにnginxが許可されていないため起きているエラーなので  
 試しに以下のコマンドを実行する。  
 `ls -la ./ | grep storage && ls -la storage/ | grep logs && ls -la storage/logs/ | grep laravel.log`  
@@ -184,7 +186,7 @@ location ~ \.php$の中で
 `sudo chmod -R 777 storage`  
 `sudo chown vagrant:vagrant /var`  
 chmodコマンドで読み書きの権限を付与をして、chownコマンドでユーザーとグループを変更するコマンドです。  
-再度ブラウザ上でhttp://192.168.33.10でアクセスして403エラーが出た時は以下の作業を行う。  
+再度ブラウザ上で`http://192.168.33.10`でアクセスして403エラーが出た時は以下の作業を行う。  
 `sudo vi /etc/selinux/config`でファイルを開き、  
 `SELINUX=disabled`と書き換える。  
 設定を反映させるためにゲストOSを再起動する必要があるので、ゲストOSをから一度ログアウトして以下のコマンドを実行する。  
@@ -194,6 +196,7 @@ chmodコマンドで読み書きの権限を付与をして、chownコマンド�
 `vagrant ssh`  
 `sudo systemctl restart nginx`  
 `sudo systemctl start php-fpm`  
+ブラウザ上でユーザーの登録・ログインができればローカルで動かしていたLaravelを仮想環境上で全く同じように動かすことができたということになる。  
 
 <br>
 
