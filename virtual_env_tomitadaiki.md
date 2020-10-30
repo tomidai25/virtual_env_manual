@@ -60,7 +60,7 @@ Laravelを動作させるにはPHPのバージョンが7以上である必要が
 1. `sudo yum -y install epel-release wget`  
 2. `sudo wget http://rpms.famillecollet.com/enterprise/remi-release-7.rpm`  
 3. `sudo rpm -Uvh remi-release-7.rpm`  
-4. `sudo yum -y install --enablerepo=remi-php73 php php-pdo php-mysqlnd php-mbstring php-xml php-fpm php-common php-devel php-mysql unzip`  
+4. `sudo yum -y install --enablerepo=remi-php73 php php-pdo php-mysqlnd php-mbstring php-xml php-fpm php-common php-devel php-mysql unzip`
 1から順にコマンドを実行した後に`php -v`を実行してphpのバージョンが確認できたら、インストール完了。 
 
 <br>
@@ -69,7 +69,7 @@ Laravelを動作させるにはPHPのバージョンが7以上である必要が
 phpパッケージ管理ツールであるcomposerをインストールする。  
 1. `php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"`  
 2. `php composer-setup.php`  
-3. `php -r "unlink('composer-setup.php');"`  
+3. `php -r "unlink('composer-setup.php');"`
 1から順にコマンドを実行していき、composerをインストールする。 
 `sudo mv composer.phar /usr/local/bin/composer`を実行して、どのディレクトリにいてもcomposerコマンドを使用を使用できるようfileの移動を行う。 
 'composer -v`を実行してcomposerのバージョンが確認できたら、インストール成功。 
@@ -88,20 +88,20 @@ laravel_serverの部分はディレクトリの名前を入力する。
 ### 2.MYSQLをインストール 
 `vagrant ssh`を実行してゲストOSにログインする。 
 `cd vgrant/Laravel_server`を実行してLaravel_serverに移動した後、rpmに新たなリポジトリを追加しMYSQLをインストールする。 
-1.`sudo wget http://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm` 
-2.`sudo rpm -Uvh mysql57-community-release-el7-7.noarch.rpm` 
-3.`sudo yum install -y mysql-community-server` 
-1から順にコマンドを実行した後に`mysql --version`を実行してMYSQLのバージョンが確認できたら、MYSQLの起動・接続を行う。 
+1. `sudo wget http://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm` 
+2. `sudo rpm -Uvh mysql57-community-release-el7-7.noarch.rpm` 
+3. `sudo yum install -y mysql-community-server`
+1から順にコマンドを実行した後に`mysql --version`を実行してMYSQLのバージョンが確認できたら、MYSQLの起動・接続を行う。  
 
 <br>
 
 ### 3.MYSQLの起動・接続 
-1. `sudo systemctl start mysqld` 
-2. `mysql -u root -p` 
+1. `sudo systemctl start mysqld`
+2. `mysql -u root -p`
 1,2の順でコマンドを実行すると、Enter password:が表示される。 
-デフォルトでパスワードが設定されてしまっているので、パスワードを調べて接続しパスワードの再設定をする必要がある。
-`sudo cat /var/log/mysqld.log | grep 'temporary password'`を実行すると下記のようにパスワードが表示される。 
- 2017-01-01T00:00:00.000000Z 1 [Note] A temporary password is generated for root@localhost: `******` 
+デフォルトでパスワードが設定されてしまっているので、パスワードを調べて接続しパスワードの再設定をする必要がある。  
+`sudo cat /var/log/mysqld.log | grep 'temporary password'`を実行すると下記のようにパスワードが表示される。  
+ 2017-01-01T00:00:00.000000Z 1 [Note] A temporary password is generated for root@localhost: `******`  
 root@localhost:の後のランダムな文字列がパスワードとなる。  
 パスワードを再設定する前に、以下の設定を行いシンプルなパスワードに初期設定できるようにMySQLの設定ファイルを変更する。  
 `sudo vi /etc/my.cnf`  
@@ -126,7 +126,7 @@ root@localhost:の後のランダムな文字列がパスワードとなる。
 - name=nginx repo
 - baseurl=http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/
 - gpgcheck=0
-- enabled=1  
+- enabled=1
 書き終えたら、保存して以下のコマンドを実行しNginxのインストールを実行する。  
 `sudo yum install -y nginx`  
 `nginx -v`  
@@ -142,24 +142,24 @@ Nginxには設定ファイルが存在しているので編集を行う。Nginx�
 使用しているOSがCentOSの場合、`/etc/nginx/conf.d`ディレクトリ下の`default.conf`ファイルが設定ファイルとなる。  
 まずはNginxの設定ファイルを編集していく。  
 `sudo vi /etc/nginx/conf.d/default.conf`でファイルを開き、  
-serverの中で  
-- server_nameにvagrantfileでコメントを外した箇所のipアドレスを記述する。  
-- root index  index.html index.htm index.php;を追記する。  
-- index  index.html index.htm index.php;を追記する。  
-location / の中で  
-- root   /usr/share/nginx/html;index の先頭に`#`をつけてコメントアウトする。  
-- index  index.html index.htm; の先頭に`#`をつけてコメントアウトする。  
-- try_files $uri $uri/ /index.php$is_args$args; を追記する。  
-location ~ \.php$の中で  
-- rootのみに`#`を先頭につけてコメントアウトする。  
-- fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name; に変更。  
+serverの中で
+- server_nameにvagrantfileでコメントを外した箇所のipアドレスを記述する。
+- root index  index.html index.htm index.php;を追記する。
+- index  index.html index.htm index.php;を追記する。
+location / の中で
+- root   /usr/share/nginx/html;index の先頭に`#`をつけてコメントアウトする。
+- index  index.html index.htm; の先頭に`#`をつけてコメントアウトする。
+- try_files $uri $uri/ /index.php$is_args$args; を追記する。
+location ~ \.php$の中で
+- rootのみに`#`を先頭につけてコメントアウトする。
+- fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name; に変更。
 次にphp-fpm の設定ファイルを編集する。  
 `sudo vi /etc/php-fpm.d/www.conf`でファイルを開き、以下２つを変更する。  
-- user = apache をuser = nginxに変更  
-- group = apache をgroup = nginxに変更  
+- user = apache をuser = nginxに変更
+- group = apache をgroup = nginxに変更
 ファイルの編集が完了したら、以下のコマンドを実行してNginxを再起動する。  
-1. `sudo systemctl restart nginx`  
-2. `sudo systemctl start php-fpm`  
+1. `sudo systemctl restart nginx`
+2. `sudo systemctl start php-fpm`
 ブラウザ上でhttp://192.168.33.10 を入力すると` Permission denied`のエラーが表示される。  
 これはphp-fpmの設定ファイルのuserとgroupをnginx に変更したが、ファイルとディレクトリの実行useとgroupにnginxが許可されていないため起きているエラーなので  
 試しに以下のコマンドを実行する。  
@@ -184,7 +184,7 @@ chmodコマンドで読み書きの権限を付与をして、chownコマンド�
 
 <br>
 
-#環境構築の所感 
+# 環境構築の所感  
 `vagrant up`をする時にportが被ってしまっていると実行が失敗してしまうので、被っているportを探して`kill`コマンドを使って消去する必要がある。  
 今回、ホストOSでMYSQLのバージョンを確認してしまったことが原因でゲストOSにMYSQLがインストールし忘れていることに気づかず、ブラウザ上でLaravelのログイン・ユーザー登録を  
 した際にデータベースが存在しないというエラーが出てしまうことがあったのでホストOSでの作業とゲストOSでの作業は混ざらないように気をつけなければならい。  
@@ -193,7 +193,7 @@ Nginxを起動した時にyes/noを求められたら全てyesを入力する。
 
 <br>
 
-#参考サイト  
+# 参考サイト  
 [Laravel6.x認証](https://readouble.com/laravel/6.x/ja/authentication.html)  
 [Giztech](http://giztech.gizumo-inc.work/categories/18/222)  
 [ももいろテクノロジー](http://inaz2.hatenablog.com/entry/2013/04/16/222440)  
