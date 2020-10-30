@@ -23,6 +23,7 @@
 >ready to `vagrant up` your first virtual environment! Please read
 >the comments in the Vagrantfile as well as documentation on` 
 >vagrantup.com` for more information on using Vagrant.  
+
 が表示される。 
 
 <br>
@@ -37,8 +38,10 @@
 <br>
 
 ### 4.vagrant プラグインのインストール 
+```  
 1. `vagrant plugin install vagrant-vbguest` 
 2. `vagrant plugin list`  
+```  
 
 の順にコマンドを実行して`vagrant-vbguest`がインストールされているか確認する。 
 
@@ -47,8 +50,9 @@
 ### 5.ゲストOSの起動 
 vagrantfileのあるディレクトリで`vagrant up`を実行してvagrantを起動をする。  
 作成したvarant用のディレクトリで`vagrant ssh`を実行してゲストOSにログインする。  
-`Welcome to your Vagrant-built virtual machine.
-[vagrant@localhost ~]$`と表示されればゲストOSにログインできている。 
+>Welcome to your Vagrant-built virtual machine.
+>[vagrant@localhost ~]$  
+と表示されればゲストOSにログインできている。 
 
 <br>
 
@@ -117,6 +121,7 @@ laravel_serverの部分はディレクトリの名前を入力する。
 デフォルトでパスワードが設定されてしまっているので、パスワードを調べて接続しパスワードの再設定をする必要がある。  
 `sudo cat /var/log/mysqld.log | grep 'temporary password'`を実行すると下記のようにパスワードが表示される。  
 > 2017-01-01T00:00:00.000000Z 1 [Note] A temporary password is generated for root@localhost: `******`  
+
 root@localhost:の後のランダムな文字列がパスワードとなる。  
 パスワードを再設定する前に、以下の設定を行いシンプルなパスワードに初期設定できるようにMySQLの設定ファイルを変更する。  
 ```
@@ -141,11 +146,11 @@ root@localhost:の後のランダムな文字列がパスワードとなる。
 `sudo vi /etc/yum.repos.d/nginx.repo`を実行してファイルを作成する。  
 作成したファイルに以下の内容を書き込む。  
 ```
-- `[nginx]`
-- name=nginx repo
-- baseurl=`http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/`
-- gpgcheck=0
-- enabled=1  
+[nginx]
+name=nginx repo
+baseurl=`http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/`
+gpgcheck=0
+enabled=1  
 ```  
 
 書き終えたら、保存して以下のコマンドを実行しNginxのインストールを実行する。  
@@ -175,40 +180,39 @@ DB_DATABASE=Laravel_markdown
 `sudo vi /etc/nginx/conf.d/default.conf`でファイルを開き、  
 serverの中で
 ```
-- server_nameにvagrantfileでコメントを外した箇所のipアドレスを記述する。
-- root index  index.html index.htm index.php;を追記する。
-- index  index.html index.htm index.php;を追記する。  
+server_nameにvagrantfileでコメントを外した箇所のipアドレスを記述する。
+root index  index.html index.htm index.php;を追記する。
+index  index.html index.htm index.php;を追記する。  
 ```  
 
 location / の中で
-```
-- root   /usr/share/nginx/html;index の先頭に`#`をつけてコメントアウトする。
-- index  index.html index.htm; の先頭に`#`をつけてコメントアウトする。
-- try_files $uri $uri/ /index.php$is_args$args; を追記する。 
+```  
+root   /usr/share/nginx/html;index の先頭に`#`をつけてコメントアウトする。
+index  index.html index.htm; の先頭に`#`をつけてコメントアウトする。
+try_files $uri $uri/ /index.php$is_args$args; を追記する。 
 ```  
 
 location ~ \.php$の中で
 ```
-- rootのみに`#`を先頭につけてコメントアウトする。
-- fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name; に変更。
+rootのみに`#`を先頭につけてコメントアウトする。
+fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name; に変更。
 ```  
 次にphp-fpm の設定ファイルを編集する。  
 
 `sudo vi /etc/php-fpm.d/www.conf`でファイルを開き、以下２つを変更する。  
 ```
-- user = apache をuser = nginxに変更
-- group = apache をgroup = nginxに変更  
+user = apache をuser = nginxに変更
+group = apache をgroup = nginxに変更  
 ``` 
 
-ファイルの編集が完了したら、以下のコマンドを実行してNginxを再起動する。  
+ファイルの編集が完了したら、以下の順にコマンドを実行してNginxを再起動する。  
 ```
 1. `sudo systemctl restart nginx`
 2. `sudo systemctl start php-fpm`  
 ```  
 
 ブラウザ上で`http://192.168.33.19`を入力すると` Permission denied`のエラーが表示される。  
-これはphp-fpmの設定ファイルのuserとgroupをnginx に変更したが、ファイルとディレクトリの実行useとgroupにnginxが許可されていないため起きているエラーなので  
-試しに以下のコマンドを実行する。  
+これはphp-fpmの設定ファイルのuserとgroupをnginx に変更したが、ファイルとディレクトリの実行useとgroupにnginxが許可されていないため起きているエラーなので試しに以下のコマンドを実行する。  
 `ls -la ./ | grep storage && ls -la storage/ | grep logs && ls -la storage/logs/ | grep laravel.log`  
 出力結果から、storageディレクトリもlogsディレクトリもlaravel.logファイルも全てuserとgroupがvagrantとなっているので、  
 これではnginxというユーザーの権限をもってlaravel.logファイルへの書き込みができないので以下のコマンドを実行してnginxというユーザーでもログファイルでの書き込みができる権限を付与する。  
