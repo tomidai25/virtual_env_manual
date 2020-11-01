@@ -52,6 +52,7 @@ vagrantfileのあるディレクトリで`vagrant up`を実行してvagrantを�
 作成したvarant用のディレクトリで`vagrant ssh`を実行してゲストOSにログインする。  
 >Welcome to your Vagrant-built virtual machine.
 >[vagrant@localhost ~]$  
+
 と表示されればゲストOSにログインできている。 
 
 <br>
