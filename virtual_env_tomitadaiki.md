@@ -38,9 +38,9 @@
 <br>
 
 ### 4.vagrant プラグインのインストール 
-```  
-1. `vagrant plugin install vagrant-vbguest` 
-2. `vagrant plugin list`  
+```nginx  
+vagrant plugin install vagrant-vbguest 
+vagrant plugin list  
 ```  
 
 の順にコマンドを実行して`vagrant-vbguest`がインストールされているか確認する。 
@@ -64,11 +64,11 @@ vagrantfileのあるディレクトリで`vagrant up`を実行してvagrantを�
 
 ### 2.PHPをインストール 
 Laravelを動作させるにはPHPのバージョンが7以上である必要がある。今回はPHPのバージョンが7.3をインストールする。  
-```
-1. `sudo yum -y install epel-release wget`  
-2. `sudo wget http://rpms.famillecollet.com/enterprise/remi-release-7.rpm`  
-3. `sudo rpm -Uvh remi-release-7.rpm`  
-4. sudo yum -y install --enablerepo=remi-php73 php php-pdo php-mysqlnd php-mbstring php-xml php-fpm php-common php-devel php-mysql unzip  
+```nginx
+sudo yum -y install epel-release wget  
+sudo wget http://rpms.famillecollet.com/enterprise/remi-release-7.rpm  
+sudo rpm -Uvh remi-release-7.rpm  
+sudo yum -y install --enablerepo=remi-php73 php php-pdo php-mysqlnd php-mbstring php-xml php-fpm php-common php-devel php-mysql unzip  
 ```  
 
 1から順にコマンドを実行した後に`php -v`を実行してphpのバージョンが確認できたら、インストール完了。 
@@ -77,10 +77,10 @@ Laravelを動作させるにはPHPのバージョンが7以上である必要が
 
 ### 3.composerをインストール 
 phpパッケージ管理ツールであるcomposerをインストールする。  
-```
-1. `php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"`  
-2. `php composer-setup.php`  
-3. `php -r "unlink('composer-setup.php');"`  
+```nginx
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"  
+php composer-setup.php  
+php -r "unlink('composer-setup.php');"  
 ```  
 
 1から順にコマンドを実行していき、composerをインストールする。 
@@ -101,20 +101,20 @@ laravel_serverの部分はディレクトリの名前を入力する。
 ### 2.MYSQLをインストール 
 `vagrant ssh`を実行してゲストOSにログインする。 
 `cd vgrant/Laravel_server`を実行してLaravel_serverに移動した後、rpmに新たなリポジトリを追加しMYSQLをインストールする。 
-```
-1. `sudo wget http://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm` 
-2. `sudo rpm -Uvh mysql57-community-release-el7-7.noarch.rpm` 
-3. `sudo yum install -y mysql-community-server`  
+```nginx
+sudo wget http://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm 
+sudo rpm -Uvh mysql57-community-release-el7-7.noarch.rpm 
+sudo yum install -y mysql-community-server  
 ```  
 
-1から順にコマンドを実行した後に`mysql --version`を実行してMYSQLのバージョンが確認できたら、MYSQLの起動・接続を行う。  
+順にコマンドを実行した後に`mysql --version`を実行してMYSQLのバージョンが確認できたら、MYSQLの起動・接続を行う。  
 
 <br>
 
 ### 3.MYSQLの起動・接続 
-```
-1. `sudo systemctl start mysqld`
-2. `mysql -u root -p`  
+```nginx
+sudo systemctl start mysqld
+mysql -u root -p  
 ```  
 
 1,2の順でコマンドを実行すると、Enter password:が表示される。 
@@ -124,9 +124,9 @@ laravel_serverの部分はディレクトリの名前を入力する。
 
 root@localhost:の後のランダムな文字列がパスワードとなる。  
 パスワードを再設定する前に、以下の設定を行いシンプルなパスワードに初期設定できるようにMySQLの設定ファイルを変更する。  
-```
-`sudo vi /etc/my.cnf`  
-`validate-password=OFF`を追記する。  
+```nginx
+sudo vi /etc/my.cnf  
+validate-password=OFFを追記する。  
 ```  
 
 ファイルを編集後、`sudo systemctl restart mysqld`を実行してMYSQLを再起動する。  
@@ -145,7 +145,7 @@ root@localhost:の後のランダムな文字列がパスワードとなる。
 ### 1.Nginxをインストール  
 `sudo vi /etc/yum.repos.d/nginx.repo`を実行してファイルを作成する。  
 作成したファイルに以下の内容を書き込む。  
-```
+```nginx
 [nginx]
 name=nginx repo
 baseurl=`http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/`
@@ -154,7 +154,7 @@ enabled=1
 ```  
 
 書き終えたら、保存して以下のコマンドを実行しNginxのインストールを実行する。  
-```
+```nginx
 `sudo yum install -y nginx`  
 `nginx -v`  
 ```  
@@ -168,7 +168,7 @@ Nginxのバージョンが確認できたら、以下のコマンドを実行し
 
 ### 2.Laravelを動かす 
 まず、作成したLaravelプロジェクトのディレクトリ下の.envファイルの内容を以下に変更する。  
-```
+```nginx
 DB_PASSWORD= `->` DB_PASSWORD=登録したパスワード  
 DB_DATABASE=Laravel_markdown  
 ```
@@ -179,36 +179,36 @@ DB_DATABASE=Laravel_markdown
 まずはNginxの設定ファイルを編集していく。  
 `sudo vi /etc/nginx/conf.d/default.conf`でファイルを開き、  
 serverの中で
-```
-server_nameにvagrantfileでコメントを外した箇所のipアドレスを記述する。
-root index  index.html index.htm index.php;を追記する。
-index  index.html index.htm index.php;を追記する。  
+```nginx
+server_name=192.168.33.19 #vagrantfileでコメントを外した箇所のipアドレスを記述する。
+root index  index.html index.htm index.php; #追記する。
+index  index.html index.htm index.php; #追記する。  
 ```  
 
 location / の中で
-```  
+```nginx  
 root   /usr/share/nginx/html;index の先頭に`#`をつけてコメントアウトする。
 index  index.html index.htm; の先頭に`#`をつけてコメントアウトする。
 try_files $uri $uri/ /index.php$is_args$args; を追記する。 
 ```  
 
 location ~ \.php$の中で
-```
+```nginx
 rootのみに`#`を先頭につけてコメントアウトする。
 fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name; に変更。
 ```  
 次にphp-fpm の設定ファイルを編集する。  
 
 `sudo vi /etc/php-fpm.d/www.conf`でファイルを開き、以下２つを変更する。  
-```
+```nginx
 user = apache をuser = nginxに変更
 group = apache をgroup = nginxに変更  
 ``` 
 
 ファイルの編集が完了したら、以下の順にコマンドを実行してNginxを再起動する。  
-```
-1. `sudo systemctl restart nginx`
-2. `sudo systemctl start php-fpm`  
+```nginx
+sudo systemctl restart nginx
+sudo systemctl start php-fpm  
 ```  
 
 ブラウザ上で`http://192.168.33.19`を入力すると` Permission denied`のエラーが表示される。  
@@ -216,10 +216,10 @@ group = apache をgroup = nginxに変更
 `ls -la ./ | grep storage && ls -la storage/ | grep logs && ls -la storage/logs/ | grep laravel.log`  
 出力結果から、storageディレクトリもlogsディレクトリもlaravel.logファイルも全てuserとgroupがvagrantとなっているので、  
 これではnginxというユーザーの権限をもってlaravel.logファイルへの書き込みができないので以下のコマンドを実行してnginxというユーザーでもログファイルでの書き込みができる権限を付与する。  
-```  
-`cd /vagrant/laravel_server`  
-`sudo chmod -R 777 storage`  
-`sudo chown vagrant:vagrant /var`  
+```nginx  
+cd /vagrant/laravel_server  
+sudo chmod -R 777 storage  
+sudo chown vagrant:vagrant /var  
 ```  
 chmodコマンドで読み書きの権限を付与をして、chownコマンドでユーザーとグループを変更するコマンドです。  
 再度ブラウザ上で`http://192.168.33.19`でアクセスして403エラーが出た時は以下の作業を行う。  
@@ -227,16 +227,16 @@ chmodコマンドで読み書きの権限を付与をして、chownコマンド�
 `SELINUX=disabled`と書き換える。  
 注：今回はローカル環境なので無効にしてしまっても問題ないが、セキュリティ的によろしくはないため本番環境と呼ばれる環境でこの方法で再設定するのは避けて別のアプローチが必要。  
 設定を反映させるためにゲストOSを再起動する必要があるので、ゲストOSをから一度ログアウトして以下のコマンドを実行する。  
-```  
-`exit`  
-`vagrant reload`  
+```nginx  
+exit  
+vagrant reload  
 ```  
 
 リロードが完了したら以下のコマンドを実行して、再度ゲストOSにログインしてNginxを起動する。  
-```  
-`vagrant ssh`  
-`sudo systemctl restart nginx`  
-`sudo systemctl start php-fpm`  
+```nginx  
+vagrant ssh  
+sudo systemctl restart nginx  
+sudo systemctl start php-fpm  
 ```  
 
 ブラウザ上でユーザーの登録・ログインができればローカルで動かしていたLaravelを仮想環境上で全く同じように動かすことができたということになる。  
