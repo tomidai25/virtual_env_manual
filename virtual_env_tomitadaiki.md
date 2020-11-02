@@ -134,7 +134,7 @@ root@localhost:の後のランダムな文字列がパスワードとなる。
 パスワードを再設定する前に、以下の設定を行いシンプルなパスワードに初期設定できるようにMySQLの設定ファイルを変更する。  
 ```nginx
 sudo vi /etc/my.cnf  
-validate-password=OFF  #追記  
+validate-password=OFF  /追記  
 ```  
 
 ファイルを編集後、`sudo systemctl restart mysqld`を実行してMYSQLを再起動する。  
@@ -209,12 +209,8 @@ fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name;  # 変更
 
 `sudo vi /etc/php-fpm.d/www.conf`でファイルを開き、以下２つを変更する。  
 ```nginx
-user = apache  
-↓ #変更  
-user = nginx  
-group = apache  
-↓ #変更  
-group = nginx  
+user = apache -> user = nginx /変更
+group = apache -> group = nginx /変更
 ``` 
 
 ファイルの編集が完了したら、以下の順にコマンドを実行してNginxを再起動する。  
