@@ -156,7 +156,7 @@ validate-password=OFF # 追記
 ```nginx
 [nginx]
 name=nginx repo
-baseurl='http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/'
+baseurl=http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/
 gpgcheck=0
 enabled=1  
 ```  
@@ -188,29 +188,29 @@ DB_DATABASE=Laravel_markdown  # 変更
 `sudo vi /etc/nginx/conf.d/default.conf`でファイルを開き、  
 serverの中で
 ```nginx
-server_name=192.168.33.19  # vagrantfileでコメントを外した箇所のipアドレスを記述する。
+server_name=192.168.33.19;  # vagrantfileでコメントを外した箇所のipアドレスを記述する。
 root index  index.html index.htm index.php;  # 追記  
 index  index.html index.htm index.php;  # 追記  
 ```  
 
 location / の中で
 ```nginx  
-root   /usr/share/nginx/html;index # コメントアウト
+root   /usr/share/nginx/html; # コメントアウト
 index  index.html index.htm; # コメントアウト
 try_files $uri $uri/ /index.php$is_args$args; # 追記 
 ```  
 
 location ~ \.php$の中で
 ```nginx
-root # rootのみコメントアウト
+root  html;   # rootのみコメントアウト
 fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name;  # 変更
 ```  
 次にphp-fpm の設定ファイルを編集する。  
 
 `sudo vi /etc/php-fpm.d/www.conf`でファイルを開き、以下２つを変更する。  
 ```nginx
-user = apache -> user = nginx # 変更
-group = apache -> group = nginx # 変更  
+user = apache -> user = nginx   # 変更
+group = apache -> group = nginx   # 変更  
 ``` 
 
 ファイルの編集が完了したら、以下の順にコマンドを実行してNginxを再起動する。  
