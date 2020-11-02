@@ -38,7 +38,7 @@ config.vm.network "private_network", ip: "192.168.33.19"
 ```  
 上記の2箇所の`#`を外し、コメントアウトして下記の箇所は変更を加える。  
 ```nginx  
-config.vm.synced_folder "../data", "/vagrant_data" -> config.vm.synced_folder "./", "/vagrant", type:"virtualbox"  # 変更  
+config.vm.synced_folder "../data", "/vagrant_data" -> config.vm.synced_folder "./", "/vagrant", type:"virtualbox"  (# 変更)  
 ```  
 
 注：ipの部分は指定されたipアドレスにする。  
@@ -134,7 +134,7 @@ root@localhost:の後のランダムな文字列がパスワードとなる。
 パスワードを再設定する前に、以下の設定を行いシンプルなパスワードに初期設定できるようにMySQLの設定ファイルを変更する。  
 ```nginx
 sudo vi /etc/my.cnf  
-validate-password=OFF # 追記  
+validate-password=OFF (# 追記)  
 ```  
 
 ファイルを編集後、`sudo systemctl restart mysqld`を実行してMYSQLを再起動する。  
@@ -178,7 +178,7 @@ Nginxのバージョンが確認できたら、以下のコマンドを実行し
 まず、作成したLaravelプロジェクトのディレクトリ下の.envファイルの内容を以下に変更する。  
 ```nginx
 DB_PASSWORD= -> DB_PASSWORD=登録したパスワード  # 変更
-DB_DATABASE=Laravel_markdown  # 変更  
+DB_DATABASE=作成したデータベースの名前(Laravel_markdown)  (# 変更)  
 ```
 
 変更が完了したら`php artisan migrate`を実行する。  
@@ -209,8 +209,8 @@ fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name;  # 変更
 
 `sudo vi /etc/php-fpm.d/www.conf`でファイルを開き、以下２つを変更する。  
 ```nginx
-user = apache -> user = nginx   # 変更
-group = apache -> group = nginx   # 変更  
+user = apache -> user = nginx  (# 変更)
+group = apache -> group = nginx   (# 変更)  
 ``` 
 
 ファイルの編集が完了したら、以下の順にコマンドを実行してNginxを再起動する。  
