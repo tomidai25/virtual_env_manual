@@ -8,7 +8,9 @@
 ### 1.vagrantboxのダウンロード 
 今いるディレクトリでvagrantboxをコマンド`vagrant box add centos/7`を実行する。 
 コマンドを実行後、virtualboxの番号を選択してenterを押す。  
-`Successfully added box 'centos/7' (v1902.01) for 'virtualbox'!`と表示されたら、ダウンロード完了。 
+>Successfully added box 'centos/7' (v1902.01) for 'virtualbox'!  
+
+と表示されたら、ダウンロード完了。 
 
 <br>
 
@@ -19,10 +21,10 @@
 - デスクトップ  
 
 作成したディレクトリの中で`vagrant init centos/7`を実行すると、問題がなければ  
->`A` Vagrantfile` has been placed in this directory. You are now
+>A 'Vagrantfile' has been placed in this directory. You are now
 >ready to `vagrant up` your first virtual environment! Please read
->the comments in the Vagrantfile as well as documentation on` 
->vagrantup.com` for more information on using Vagrant.  
+>the comments in the Vagrantfile as well as documentation on 
+>'vagrantup.com` for more information on using Vagrant.  
 
 が表示される。 
 
@@ -30,10 +32,16 @@
 
 ### 3.Vagrantfileの編集 
 `vi vagrantfile`を実行して 
-- config.vm.network "forwarded_port", guest: 80, host: 8080 
-- config.vm.network "private_network", ip: "192.168.33.19" 
-の`#`を外し、`config.vm.synced_folder "../data", "/vagrant_data"`を`config.vm.synced_folder "./", "/vagrant", type:"virtualbox"`に変更する。  
-注：ipの部分は変更があればしておく。 
+```nginx  
+config.vm.network "forwarded_port", guest: 80, host: 8080 
+config.vm.network "private_network", ip: "192.168.33.19"  
+```  
+上記の2箇所の`#`を外し、コメントアウトして下記の箇所は変更を加える。  
+```nginx  
+config.vm.synced_folder "../data", "/vagrant_data" -> config.vm.synced_folder "./", "/vagrant", type:"virtualbox"  # 変更  
+```  
+
+注：ipの部分は指定されたipアドレスにする。  
 
 <br>
 
@@ -43,14 +51,14 @@ vagrant plugin install vagrant-vbguest
 vagrant plugin list  
 ```  
 
-の順にコマンドを実行して`vagrant-vbguest`がインストールされているか確認する。 
+上記の順にコマンドを実行して`vagrant-vbguest`がインストールされているか確認する。 
 
 <br>
 
 ### 5.ゲストOSの起動 
 vagrantfileのあるディレクトリで`vagrant up`を実行してvagrantを起動をする。  
 作成したvarant用のディレクトリで`vagrant ssh`を実行してゲストOSにログインする。  
->Welcome to your Vagrant-built virtual machine.
+>Welcome to your Vagrant-built virtual machine.  
 >[vagrant@localhost ~]$  
 
 と表示されればゲストOSにログインできている。 
@@ -64,7 +72,7 @@ vagrantfileのあるディレクトリで`vagrant up`を実行してvagrantを�
 <br>
 
 ### 2.PHPをインストール 
-Laravelを動作させるにはPHPのバージョンが7以上である必要がある。今回はPHPのバージョンが7.3をインストールする。  
+Laravelを動作させるにはPHPのバージョンが7以上である必要がある。今回はPHPのバージョン7.3を以下のコマンドを実行してインストールする。  
 ```nginx
 sudo yum -y install epel-release wget  
 sudo wget http://rpms.famillecollet.com/enterprise/remi-release-7.rpm  
@@ -72,7 +80,7 @@ sudo rpm -Uvh remi-release-7.rpm
 sudo yum -y install --enablerepo=remi-php73 php php-pdo php-mysqlnd php-mbstring php-xml php-fpm php-common php-devel php-mysql unzip  
 ```  
 
-1から順にコマンドを実行した後に`php -v`を実行してphpのバージョンが確認できたら、インストール完了。 
+`php -v`を実行してphpのバージョンが確認できたら、インストール完了。 
 
 <br>
 
@@ -84,9 +92,8 @@ php composer-setup.php
 php -r "unlink('composer-setup.php');"  
 ```  
 
-1から順にコマンドを実行していき、composerをインストールする。 
 `sudo mv composer.phar /usr/local/bin/composer`を実行して、どのディレクトリにいてもcomposerコマンドを使用を使用できるようfileの移動を行う。 
-'composer -v`を実行してcomposerのバージョンが確認できたら、インストール成功。 
+`composer -v`を実行してcomposerのバージョンが確認できたら、インストール成功。 
 
 <br>
 
@@ -118,7 +125,7 @@ sudo systemctl start mysqld
 mysql -u root -p  
 ```  
 
-1,2の順でコマンドを実行すると、Enter password:が表示される。 
+上記の順でコマンドを実行すると、Enter password:が表示される。 
 デフォルトでパスワードが設定されてしまっているので、パスワードを調べて接続しパスワードの再設定をする必要がある。  
 `sudo cat /var/log/mysqld.log | grep 'temporary password'`を実行すると下記のようにパスワードが表示される。  
 > 2017-01-01T00:00:00.000000Z 1 [Note] A temporary password is generated for root@localhost: `******`  
@@ -127,7 +134,7 @@ root@localhost:の後のランダムな文字列がパスワードとなる。
 パスワードを再設定する前に、以下の設定を行いシンプルなパスワードに初期設定できるようにMySQLの設定ファイルを変更する。  
 ```nginx
 sudo vi /etc/my.cnf  
-validate-password=OFFを追記する。  
+validate-password=OFF # 追記  
 ```  
 
 ファイルを編集後、`sudo systemctl restart mysqld`を実行してMYSQLを再起動する。  
@@ -149,15 +156,15 @@ validate-password=OFFを追記する。
 ```nginx
 [nginx]
 name=nginx repo
-baseurl=`http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/`
+baseurl='http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/'
 gpgcheck=0
 enabled=1  
 ```  
 
 書き終えたら、保存して以下のコマンドを実行しNginxのインストールを実行する。  
 ```nginx
-`sudo yum install -y nginx`  
-`nginx -v`  
+sudo yum install -y nginx  
+nginx -v  
 ```  
 
 Nginxのバージョンが確認できたら、以下のコマンドを実行してNginxを起動する。  
@@ -170,8 +177,8 @@ Nginxのバージョンが確認できたら、以下のコマンドを実行し
 ### 2.Laravelを動かす 
 まず、作成したLaravelプロジェクトのディレクトリ下の.envファイルの内容を以下に変更する。  
 ```nginx
-DB_PASSWORD= `->` DB_PASSWORD=登録したパスワード  
-DB_DATABASE=Laravel_markdown  
+DB_PASSWORD= -> DB_PASSWORD=登録したパスワード  # 変更
+DB_DATABASE=Laravel_markdown  # 変更  
 ```
 
 変更が完了したら`php artisan migrate`を実行する。  
@@ -181,29 +188,29 @@ DB_DATABASE=Laravel_markdown
 `sudo vi /etc/nginx/conf.d/default.conf`でファイルを開き、  
 serverの中で
 ```nginx
-server_name=192.168.33.19 #vagrantfileでコメントを外した箇所のipアドレスを記述する。
-root index  index.html index.htm index.php; #追記する。
-index  index.html index.htm index.php; #追記する。  
+server_name=192.168.33.19  # vagrantfileでコメントを外した箇所のipアドレスを記述する。
+root index  index.html index.htm index.php;  # 追記  
+index  index.html index.htm index.php;  # 追記  
 ```  
 
 location / の中で
 ```nginx  
-root   /usr/share/nginx/html;index の先頭に`#`をつけてコメントアウトする。
-index  index.html index.htm; の先頭に`#`をつけてコメントアウトする。
-try_files $uri $uri/ /index.php$is_args$args; を追記する。 
+root   /usr/share/nginx/html;index # コメントアウト
+index  index.html index.htm; # コメントアウト
+try_files $uri $uri/ /index.php$is_args$args; # 追記 
 ```  
 
 location ~ \.php$の中で
 ```nginx
-rootのみに`#`を先頭につけてコメントアウトする。
-fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name; に変更。
+root # rootのみコメントアウト
+fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name;  # 変更
 ```  
 次にphp-fpm の設定ファイルを編集する。  
 
 `sudo vi /etc/php-fpm.d/www.conf`でファイルを開き、以下２つを変更する。  
 ```nginx
-user = apache をuser = nginxに変更
-group = apache をgroup = nginxに変更  
+user = apache -> user = nginx # 変更
+group = apache -> group = nginx # 変更  
 ``` 
 
 ファイルの編集が完了したら、以下の順にコマンドを実行してNginxを再起動する。  
@@ -247,7 +254,7 @@ sudo systemctl start php-fpm
 # 環境構築の所感  
 `vagrant up`をする時にportが被ってしまっていると実行が失敗してしまうので、被っているportを探して`kill`コマンドを使って消去する必要がある。  
 今回、ホストOSでMYSQLのバージョンを確認してしまったことが原因でゲストOSにMYSQLがインストールし忘れていることに気づかず、ブラウザ上でLaravelのログイン・ユーザー登録をした際にデータベースが存在しないというエラーが出てしまうことがあったのでホストOSでの作業とゲストOSでの作業は混ざらないように気をつけなければならい。  
-chmod -R 777 storage コマンドはゲストOSからログアウトしてホストOSでも実行可能。  
+`chmod -R 777 storage` コマンドはゲストOSからログアウトしてホストOSでも実行可能。  
 今回、イレギュラーなエラーの対応の為、一度vagrantとNginxを停止してから再起動をかけたことによりyes/noを求められたのでNginxを起動させる為、全てyesを入力した。  
 
 <br>
