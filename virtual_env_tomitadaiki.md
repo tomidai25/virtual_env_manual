@@ -209,8 +209,8 @@ fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name;  # 変更
 
 `sudo vi /etc/php-fpm.d/www.conf`でファイルを開き、以下２つを変更する。  
 ```shell
-user = apache -> user = nginx # 変更
-group = apache -> group = nginx # 変更
+user = apache → user = nginx # 変更
+group = apache → group = nginx # 変更
 ``` 
 
 ファイルの編集が完了したら、以下の順にコマンドを実行してNginxを再起動する。  
